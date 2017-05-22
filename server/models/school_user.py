@@ -8,7 +8,8 @@ def schooluser_formatter(schooluser_tuple):
     return {
         'id': schooluser_tuple[0],
         'username': schooluser_tuple[1],
-        'school_id': SchoolHelper.get_by_id(schooluser_tuple[2])
+        'school_id': SchoolHelper.get_by_id(schooluser_tuple[2]),
+        'logtype': 1
     }
 
 

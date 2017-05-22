@@ -8,7 +8,8 @@ def schoolmanager_formatter(schoolmanager_tuple):
     return {
         'id': schoolmanager_tuple[0],
         'username': schoolmanager_tuple[1],
-        'school_id': SchoolHelper.get_by_id(schoolmanager_tuple[2])
+        'school_id': SchoolHelper.get_by_id(schoolmanager_tuple[2]),
+        'logtype': 2
     }
 
 

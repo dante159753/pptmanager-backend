@@ -11,18 +11,21 @@ def generate_token(obj):
     return jwt.encode(obj, app.config['JWT_SECRET'], algorithm='HS256')
 
 
-def check_token(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        token = request.headers.get('token', '')
-        try:
-            obj = jwt.decode(token, app.config['JWT_SECRET'], algorithm='HS256')
-            # check obj TODO
-        except jwt.InvalidTokenError:
-            return {'msg': 'invalid token', 'code': 401}
+def require_auth(logtype_list):
+    def check_token(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            token = request.headers.get('token', '')
+            try:
+                obj = jwt.decode(token, app.config['JWT_SECRET'], algorithm='HS256')
+                if int(obj['logtype']) not in logtype_list:
+                    return {'msg': 'no authority', 'code': 401}
+            except jwt.InvalidTokenError:
+                return {'msg': 'invalid token', 'code': 401}
 
-        return f(*args, **kwargs)
-    return decorated_function
+            return {'code': 200, 'data': f(*args, **kwargs)}
+        return decorated_function
+    return check_token
 
 
 def format_by_formater(formater, multi=False):

@@ -30,6 +30,22 @@ class SchoolHelper:
         return cursor.fetchall()
 
     @staticmethod
+    def get_visible_tree(school_id):
+        from .course import CourseHelper
+        from .document import DocumentHelper
+
+        result = []
+        for course in CourseHelper.get_all():
+            print DocumentHelper.get_by_school(school_id)
+            docs = DocumentHelper.filter_by_course(DocumentHelper.get_by_school(school_id), course['id'])
+            result.append({
+                'label': "{}({}/{})".format(course['name'], len(docs), course['doc_number']),
+                'children': [{'label': doc['description']} for doc in docs]
+            })
+
+        return result
+
+    @staticmethod
     def create_school(name):
 
         cursor = execute_modify(

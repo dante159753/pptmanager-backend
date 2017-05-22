@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from flask_restful import Resource, fields, marshal_with, abort, reqparse
 from server.models.backend_manager import BackendHelper
-from server.util import check_token
+from server.util import require_auth
 
 back_manager_fields = {
     'id': fields.Integer,
@@ -11,8 +11,8 @@ back_manager_fields = {
 
 
 class BackendManager(Resource):
+    @require_auth([3])
     @marshal_with(back_manager_fields)
-    @check_token
     def get(self, manager_id=None):
         result = None
         if manager_id is not None:
@@ -23,8 +23,8 @@ class BackendManager(Resource):
             abort(404)
         return result
 
+    @require_auth([3])
     @marshal_with(back_manager_fields)
-    @check_token
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('username', required=True, help='username is required')
@@ -36,8 +36,8 @@ class BackendManager(Resource):
         else:
             abort(400)
 
+    @require_auth([3])
     @marshal_with(back_manager_fields)
-    @check_token
     def put(self, manager_id):
         parser = reqparse.RequestParser()
         parser.add_argument('username', required=False, help='username is required')
@@ -58,10 +58,13 @@ class BackendManager(Resource):
 
         return BackendHelper.get_by_id(manager_id)
 
-    @check_token
+    @require_auth([3])
     def delete(self, manager_id):
         if BackendHelper.delete_by_id(manager_id):
             return ''
         else:
             abort(400)
+
+    def options(self, manager_id=None):
+        return ''
 

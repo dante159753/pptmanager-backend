@@ -9,7 +9,8 @@ def document_formatter(document_tuple):
         'type': document_tuple[1],
         'description': document_tuple[2],
         'content': document_tuple[3],
-        'course_id': document_tuple[4]
+        'course_id': document_tuple[4],
+        'coursename': document_tuple[5] if document_tuple[5] else '无所属课程'
     }
 
 
@@ -17,28 +18,35 @@ class DocumentHelper:
     @staticmethod
     @format_by_formater(document_formatter)
     def get_by_id(document_id):
-        cursor = execute_query('select id, type, description, content, course_id from document where id=?', [document_id])
+        cursor = execute_query(
+            'select document.id, type, description, content, course_id, course_name'
+            ' from document, course where id=? and document.course_id=course.id'
+            , [document_id])
         return cursor.fetchone()
 
     @staticmethod
     @format_by_formater(document_formatter, True)
     def get_all():
-        cursor = execute_query('select id, type, description, content, course_id from document')
+        cursor = execute_query(
+            'select document.id, type, description, content, course_id, course.name'
+            ' from document, course where document.course_id=course.id')
         return cursor.fetchall()
 
     @staticmethod
-    @format_by_formater(document_formatter)
+    @format_by_formater(document_formatter, True)
     def get_by_school(school_id):
         cursor = execute_query(
-            'select id, type, description, content, course_id from document where id in (select doc_id from '
+            'select document.id, type, description, content, course_id, course.name '
+            'from document, course where document.course_id=course.id and document.id in (select doc_id from '
             'school_doc where school_id=?)',
                                [school_id])
-        return cursor.fetchone()
+        return cursor.fetchall()
 
     @staticmethod
-    @format_by_formater(document_formatter)
     def filter_by_course(doc_list, course_id):
-        return filter(lambda case: int(case['course_id']) == int(course_id), doc_list)
+        return filter(
+            lambda doc: (doc['course_id'] is not None) and (int(doc['course_id']) == int(course_id)),
+            doc_list)
 
     @staticmethod
     def create_document(name):

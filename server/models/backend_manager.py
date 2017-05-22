@@ -7,7 +7,8 @@ def backmanager_formatter(backmanager_tuple):
     return {
         'id': backmanager_tuple[0],
         'name': backmanager_tuple[1],
-        'is_super': True if backmanager_tuple[2] == 1 else False
+        'is_super': True if backmanager_tuple[2] == 1 else False,
+        'logtype': 3
     }
 
 

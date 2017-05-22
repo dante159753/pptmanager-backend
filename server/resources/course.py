@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 from flask_restful import Resource, fields, marshal_with, abort, reqparse
 from server.models.course import CourseHelper
-from server.util import check_token
+from server.util import require_auth
 
 course_fields = {
     'id': fields.Integer,
     'name': fields.String,
+    'doc_number': fields.Integer
 }
 
 
 class Course(Resource):
+    @require_auth([3])
     @marshal_with(course_fields)
-    @check_token
     def get(self, course_id=None):
         result = None
         if course_id is not None:
@@ -22,8 +23,8 @@ class Course(Resource):
             abort(404)
         return result
 
+    @require_auth([3])
     @marshal_with(course_fields)
-    @check_token
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('name', required=True, help='name is required')
@@ -35,10 +36,12 @@ class Course(Resource):
         else:
             abort(400)
 
-    @check_token
+    @require_auth([3])
     def delete(self, course_id):
         if CourseHelper.delete_by_id(course_id):
             return ''
         else:
             abort(400)
 
+    def options(self, manager_id=None):
+        return ''

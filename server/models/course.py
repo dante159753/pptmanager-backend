@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from server.util import execute_query, execute_modify, format_by_formater
+from .document import DocumentHelper
 
 
 def course_formatter(course_tuple):
     return {
         'id': course_tuple[0],
-        'name': course_tuple[1]
+        'name': course_tuple[1],
+        'doc_number': len(DocumentHelper.filter_by_course(DocumentHelper.get_all(), course_tuple[0]))
     }
 
 

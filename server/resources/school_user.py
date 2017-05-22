@@ -2,7 +2,7 @@
 from flask_restful import Resource, fields, marshal_with, abort, reqparse
 from server.models.school_user import SchoolUserHelper
 from server.resources.school import school_fields
-from server.util import check_token
+from server.util import require_auth
 
 school_user_fields = {
     'id': fields.Integer,
@@ -12,8 +12,8 @@ school_user_fields = {
 
 
 class SchoolUser(Resource):
+    @require_auth([3])
     @marshal_with(school_user_fields)
-    @check_token
     def get(self, user_id=None):
         result = None
         if user_id is not None:
@@ -24,8 +24,8 @@ class SchoolUser(Resource):
             abort(404)
         return result
 
+    @require_auth([3])
     @marshal_with(school_user_fields)
-    @check_token
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('username', required=True, help='username is required')
@@ -37,8 +37,8 @@ class SchoolUser(Resource):
         else:
             abort(400)
 
+    @require_auth([3])
     @marshal_with(school_user_fields)
-    @check_token
     def put(self, user_id):
         parser = reqparse.RequestParser()
         parser.add_argument('username', required=False, help='username is required')
@@ -59,10 +59,13 @@ class SchoolUser(Resource):
 
         return SchoolUserHelper.get_by_id(user_id)
 
-    @check_token
+    @require_auth([3])
     def delete(self, user_id):
         if SchoolUserHelper.delete_by_id(user_id):
             return ''
         else:
             abort(400)
+
+    def options(self, manager_id=None):
+        return ''
 

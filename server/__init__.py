@@ -6,11 +6,25 @@ import json
 app = Flask(__name__)
 api = Api(app)
 
+
+@api.representation('application/json')
+def output_json(data, code, headers=None):
+    resp = make_response(json.dumps(data), code)
+    resp.headers.extend({
+        "Access-Control-Allow-Origin": '*',
+        "Access-Control-Allow-Headers": 'token, Content-Type, Accept',
+        'Access-Control-Expose-Headers': 'token'
+        })
+    return resp
+
 # set jwt secret
 app.config['JWT_SECRET'] = 'my_secret'
 # set upload folder
 app.config['UPLOAD_FOLDER'] = '/root/petclinic/pet_clinic_backend/data'
 
+
+from resources.login import Login
+api.add_resource(Login, '/login')
 
 from resources.backend_manager import BackendManager
 api.add_resource(BackendManager, '/backend_manager', '/backend_manager/<int:manager_id>')
