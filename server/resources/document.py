@@ -58,7 +58,6 @@ class Document(Resource):
             abort(404)
         return result
 
-    @require_auth([3])
     @marshal_with(document_fields)
     def post(self):
         parser = reqparse.RequestParser()
