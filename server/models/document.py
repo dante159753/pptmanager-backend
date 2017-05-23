@@ -109,8 +109,8 @@ class DocumentHelper:
             return False, 'invalid extension'
 
         cursor = execute_modify(
-            "insert into document (description, content) "
-            "values (?, ?)",
+            "insert into document (description, content, type) "
+            "values (?, ?, '0')",
             (doc_name, address)
         )
         # row count为1表示插入成功
