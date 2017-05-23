@@ -12,7 +12,6 @@ class DocumentFile(Resource):
 
         response = flask.make_response(open(os.path.join(app.config['UPLOAD_FOLDER'], doc['path']), 'rb').read())
         response.headers['content-type'] = 'application/octet-stream'
-        response.headers['Content-Disposition'] = "inline; filename=" + doc['description']
 
         return response
 

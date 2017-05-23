@@ -5,7 +5,7 @@ import os
 import uuid
 from server import app
 
-DOC_EXTS = ['ppt', 'pdf', 'mp4', 'doc']
+DOC_EXTS = ['ppt', 'pptx', 'pdf', 'mp4', 'doc', 'docx']
 
 
 def document_formatter(document_tuple):
