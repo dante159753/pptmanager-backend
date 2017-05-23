@@ -139,10 +139,17 @@ class DocumentHelper:
 
     @staticmethod
     def delete_by_id(document_id):
-        cursor = execute_modify(
-            "delete from document where id=?",
-            (document_id,),
-            True
-        )
-        return cursor.rowcount == 1
+        doc = DocumentHelper.get_by_id(document_id)
+        if doc:
+            cursor = execute_modify(
+                "delete from document where id=?",
+                (document_id,),
+                True
+            )
 
+            os.remove(os.path.join(app.config['UPLOAD_FOLDER'], doc['path']))
+
+            return cursor.rowcount == 1
+        else:
+            print 'no doc'
+            return False
