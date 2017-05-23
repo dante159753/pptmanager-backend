@@ -7,7 +7,6 @@ from server import app
 
 
 class DocumentFile(Resource):
-    @require_auth([1, 2, 3], True)
     def get(self, document_id=None):
         doc = DocumentHelper.get_by_id(document_id)
 
