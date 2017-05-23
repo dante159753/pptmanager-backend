@@ -65,9 +65,10 @@ class Document(Resource):
         args = parser.parse_args()
 
         result = DocumentHelper.create_document(args['file'])
-        if result:
-            return DocumentHelper.get_by_id(result)
+        if result[0]:
+            return DocumentHelper.get_by_id(result[1])
         else:
+            print result[1]
             abort(400)
 
     @require_auth([3])

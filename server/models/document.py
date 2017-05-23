@@ -115,9 +115,9 @@ class DocumentHelper:
         )
         # row count为1表示插入成功
         if cursor.rowcount != 1:
-            return False
+            return False, 'insert failed'
         else:
-            return cursor.lastrowid
+            return True, cursor.lastrowid
 
     @staticmethod
     def modify_name(docid, name):
