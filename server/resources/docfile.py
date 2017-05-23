@@ -15,7 +15,7 @@ document_fields = {
 }
 
 
-class Document(Resource):
+class DocumentFile(Resource):
     @require_auth([1, 2, 3])
     @marshal_with(document_fields)
     def get(self, document_id=None):

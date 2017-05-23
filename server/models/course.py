@@ -41,9 +41,12 @@ class CourseHelper:
 
     @staticmethod
     def delete_by_id(course_id):
+        for doc in DocumentHelper.filter_by_course(DocumentHelper.get_all(), course_id):
+            DocumentHelper.modify_course(doc['id'], None)
         cursor = execute_modify(
             "delete from course where id=?",
-            (course_id,)
+            (course_id,),
+            True
         )
         return cursor.rowcount == 1
 

@@ -76,7 +76,8 @@ class BackendHelper:
     def delete_by_id(manager_id):
         cursor = execute_modify(
             "delete from backend_manager where id=?",
-            (manager_id,)
+            (manager_id,),
+            True
         )
         return cursor.rowcount == 1
 

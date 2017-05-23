@@ -18,6 +18,7 @@ def require_auth(logtype_list):
             token = request.headers.get('token', '')
             try:
                 obj = jwt.decode(token, app.config['JWT_SECRET'], algorithm='HS256')
+                print obj['logtype']
                 if int(obj['logtype']) not in logtype_list:
                     return {'msg': 'no authority', 'code': 401}
             except jwt.InvalidTokenError:
@@ -47,19 +48,21 @@ def format_by_formater(formater, multi=False):
 def execute_query(sql, args=tuple()):
     # connect to mysql
     import sqlite3
-    db_conn = sqlite3.connect('e:\\xm\\PPTmanage\\pptmanage.db')
+    db_conn = sqlite3.connect(app.config['SQLITE_DIR'])
 
     cursor = db_conn.cursor()
     cursor.execute(sql, args)
     return cursor
 
 
-def execute_modify(sql, args=tuple()):
+def execute_modify(sql, args=tuple(), foreign=False):
     # connect to mysql
     import sqlite3
-    db_conn = sqlite3.connect('e:\\xm\\PPTmanage\\pptmanage.db')
+    db_conn = sqlite3.connect(app.config['SQLITE_DIR'])
 
     cursor = db_conn.cursor()
+    if foreign:
+        cursor.execute("PRAGMA foreign_keys = true;")
     cursor.execute(sql, args)
     db_conn.commit()
     return cursor

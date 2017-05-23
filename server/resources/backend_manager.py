@@ -31,8 +31,9 @@ class BackendManager(Resource):
         parser.add_argument('password', required=True, help='password is required')
         args = parser.parse_args()
 
-        if BackendHelper.create_manager(args['username'], args['password']):
-            return BackendHelper.get_by_name(args['username'])
+        new_rowid = BackendHelper.create_manager(args['username'], args['password'])
+        if new_rowid:
+            return BackendHelper.get_by_id(new_rowid)
         else:
             abort(400)
 
@@ -40,8 +41,8 @@ class BackendManager(Resource):
     @marshal_with(back_manager_fields)
     def put(self, manager_id):
         parser = reqparse.RequestParser()
-        parser.add_argument('username', required=False, help='username is required')
-        parser.add_argument('password', required=False, help='password is required')
+        parser.add_argument('username', required=False)
+        parser.add_argument('password', required=False)
         args = parser.parse_args()
 
         print args

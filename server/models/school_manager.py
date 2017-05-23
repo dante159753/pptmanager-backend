@@ -8,7 +8,7 @@ def schoolmanager_formatter(schoolmanager_tuple):
     return {
         'id': schoolmanager_tuple[0],
         'username': schoolmanager_tuple[1],
-        'school_id': SchoolHelper.get_by_id(schoolmanager_tuple[2]),
+        'school': SchoolHelper.get_by_id(schoolmanager_tuple[2]),
         'logtype': 2
     }
 
@@ -31,6 +31,10 @@ class SchoolManagerHelper:
     def get_all():
         cursor = execute_query('select id, username, school_id from school_manager')
         return cursor.fetchall()
+
+    @staticmethod
+    def filter_by_school(managers, school_id):
+        return filter(lambda manager: (str(manager['school']['id']) == str(school_id)), managers)
 
     @staticmethod
     def create_manager(username, password, school_id):
@@ -85,7 +89,8 @@ class SchoolManagerHelper:
     def delete_by_id(manager_id):
         cursor = execute_modify(
             "delete from school_manager where id=?",
-            (manager_id,)
+            (manager_id,),
+            True
         )
         return cursor.rowcount == 1
 

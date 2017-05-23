@@ -11,7 +11,7 @@ course_fields = {
 
 
 class Course(Resource):
-    @require_auth([3])
+    @require_auth([1, 2, 3])
     @marshal_with(course_fields)
     def get(self, course_id=None):
         result = None
@@ -43,5 +43,5 @@ class Course(Resource):
         else:
             abort(400)
 
-    def options(self, manager_id=None):
+    def options(self, course_id=None):
         return ''

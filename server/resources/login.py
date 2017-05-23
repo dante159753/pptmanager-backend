@@ -19,10 +19,10 @@ class Login(Resource):
 
         helper = SchoolUserHelper
 
-        if int(args['logtype']) == 2:
+        if str(args['logtype']) == '2':
             helper = SchoolManagerHelper
 
-        if int(args['logtype']) == 3:
+        if str(args['logtype']) == '3':
             helper = BackendHelper
 
         if helper.check_password(args['username'], args['password']):
@@ -31,5 +31,5 @@ class Login(Resource):
         else:
             return {'msg': 'invalid username or password', 'code': 401}
 
-    def options(self, manager_id=None):
+    def options(self):
         return ''

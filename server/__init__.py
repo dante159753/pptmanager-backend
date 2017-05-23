@@ -13,7 +13,8 @@ def output_json(data, code, headers=None):
     resp.headers.extend({
         "Access-Control-Allow-Origin": '*',
         "Access-Control-Allow-Headers": 'token, Content-Type, Accept',
-        'Access-Control-Expose-Headers': 'token'
+        'Access-Control-Expose-Headers': 'token',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
         })
     return resp
 
@@ -21,6 +22,8 @@ def output_json(data, code, headers=None):
 app.config['JWT_SECRET'] = 'my_secret'
 # set upload folder
 app.config['UPLOAD_FOLDER'] = '/root/petclinic/pet_clinic_backend/data'
+# set db path
+app.config['SQLITE_DIR'] = 'e:\\xm\\PPTmanage\\pptmanage.db'
 
 
 from resources.login import Login
@@ -34,6 +37,9 @@ api.add_resource(School, '/school', '/school/<int:school_id>')
 
 from resources.document import Document
 api.add_resource(Document, '/document', '/document/<int:document_id>')
+
+from resources.docfile import DocumentFile
+api.add_resource(DocumentFile, '/docfile', '/docfile/<int:document_id>')
 
 from resources.course import Course
 api.add_resource(Course, '/course', '/course/<int:course_id>')
