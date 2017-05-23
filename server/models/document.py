@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from server.util import execute_query, execute_modify, format_by_formater
+import os
+import uuid
+from server import app
+
+DOC_EXTS = ['ppt', 'pdf', 'mp4', 'doc']
 
 
 def document_formatter(document_tuple):
@@ -10,7 +15,8 @@ def document_formatter(document_tuple):
         'description': document_tuple[2],
         'content': document_tuple[3],
         'course_id': document_tuple[4],
-        'coursename': document_tuple[5] if document_tuple[5] else u'无所属课程'
+        'coursename': document_tuple[5] if document_tuple[5] else u'无所属课程',
+        'path': document_tuple[6]
     }
 
 
@@ -19,7 +25,7 @@ class DocumentHelper:
     @format_by_formater(document_formatter)
     def get_by_id(document_id):
         cursor = execute_query(
-            'select document.id, type, description, content, course_id, course.name'
+            'select document.id, type, description, content, course_id, course.name, content'
             ' from document left join course on document.course_id=course.id where document.id=? '
             , [document_id])
         return cursor.fetchone()
@@ -28,7 +34,7 @@ class DocumentHelper:
     @format_by_formater(document_formatter, True)
     def get_all():
         cursor = execute_query(
-            'select document.id, type, description, content, course_id, course.name'
+            'select document.id, type, description, content, course_id, course.name, content'
             ' from document left join course on document.course_id=course.id')
         return cursor.fetchall()
 
@@ -36,7 +42,7 @@ class DocumentHelper:
     @format_by_formater(document_formatter, True)
     def get_by_school(school_id):
         cursor = execute_query(
-            'select document.id, type, description, content, course_id, course.name '
+            'select document.id, type, description, content, course_id, course.name, content '
             'from document left join course on document.course_id=course.id where document.id in (select doc_id from '
             'school_doc where school_id=?)',
                                [school_id])
@@ -46,7 +52,7 @@ class DocumentHelper:
     @format_by_formater(document_formatter, True)
     def get_by_user(user_id):
         cursor = execute_query(
-            'select document.id, type, description, content, course_id, course.name '
+            'select document.id, type, description, content, course_id, course.name, content '
             'from document left join course on document.course_id=course.id where document.id in (select doc_id from '
             'user_doc where user_id=?)',
             [user_id])
@@ -91,12 +97,21 @@ class DocumentHelper:
         return True
 
     @staticmethod
-    def create_document(name):
+    def create_document(docfile):
+        doc_name = docfile.filename
+        ext = doc_name.rsplit('.', 1)[1].lower()
+        if '.' in doc_name and ext in DOC_EXTS:
+            new_fname = str(uuid.uuid4()) + '.' + ext
+            address = os.path.join('docfile', new_fname)
+            docfile.save(os.path.join(app.config['UPLOAD_FOLDER'], address))
+
+        else:
+            return False, 'invalid extension'
 
         cursor = execute_modify(
-            "insert into document (name) "
-            "values (?)",
-            (name,)
+            "insert into document (description, content) "
+            "values (?, ?)",
+            (doc_name, address)
         )
         # row count为1表示插入成功
         if cursor.rowcount != 1:

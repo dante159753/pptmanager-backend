@@ -11,7 +11,7 @@ def generate_token(obj):
     return jwt.encode(obj, app.config['JWT_SECRET'], algorithm='HS256')
 
 
-def require_auth(logtype_list):
+def require_auth(logtype_list, nowrap=False):
     def check_token(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
@@ -24,7 +24,10 @@ def require_auth(logtype_list):
             except jwt.InvalidTokenError:
                 return {'msg': 'invalid token', 'code': 401}
 
-            return {'code': 200, 'data': f(*args, **kwargs)}
+            if nowrap:
+                return f(*args, **kwargs)
+            else:
+                return {'code': 200, 'data': f(*args, **kwargs)}
         return decorated_function
     return check_token
 

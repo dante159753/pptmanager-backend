@@ -21,7 +21,7 @@ def output_json(data, code, headers=None):
 # set jwt secret
 app.config['JWT_SECRET'] = 'my_secret'
 # set upload folder
-app.config['UPLOAD_FOLDER'] = '/root/petclinic/pet_clinic_backend/data'
+app.config['UPLOAD_FOLDER'] = '/root/pptmanager/pptmanager-backend/data'
 # set db path
 app.config['SQLITE_DIR'] = 'e:\\xm\\PPTmanage\\pptmanage.db'
 

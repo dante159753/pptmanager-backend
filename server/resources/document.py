@@ -4,6 +4,7 @@ from server.models.document import DocumentHelper
 from server.util import require_auth
 from server.models.school_manager import SchoolManagerHelper
 from server.models.school_user import SchoolUserHelper
+import werkzeug
 
 document_fields = {
     'id': fields.Integer,
@@ -61,10 +62,10 @@ class Document(Resource):
     @marshal_with(document_fields)
     def post(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('name', required=True, help='name is required')
+        parser.add_argument('file', required=True, type=werkzeug.datastructures.FileStorage, location='files')
         args = parser.parse_args()
 
-        result = DocumentHelper.create_document(args['name'])
+        result = DocumentHelper.create_document(args['file'])
         if result:
             return DocumentHelper.get_by_id(result)
         else:
