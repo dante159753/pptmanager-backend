@@ -23,7 +23,7 @@ app.config['JWT_SECRET'] = 'my_secret'
 # set upload folder
 app.config['UPLOAD_FOLDER'] = '/root/pptmanager/pptmanager-backend/data'
 # set db path
-app.config['SQLITE_DIR'] = 'e:\\xm\\PPTmanage\\pptmanage.db'
+app.config['SQLITE_DIR'] = '/root/pptmanager/pptmanager-backend/sqlite.db'
 
 
 from resources.login import Login
