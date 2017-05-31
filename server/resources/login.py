@@ -26,8 +26,12 @@ class Login(Resource):
             helper = BackendHelper
 
         if helper.check_password(args['username'], args['password']):
-            print helper.get_by_name(args['username'])
-            return {'code': 200, 'data': generate_token(helper.get_by_name(args['username']))}
+            userinfo = helper.get_by_name(args['username'])
+            print userinfo
+            return {'code': 200, 'data': {
+                'token': generate_token(helper.get_by_name(args['username'])),
+                'userinfo': userinfo
+            }}
         else:
             return {'msg': 'invalid username or password', 'code': 401}
 
