@@ -146,8 +146,10 @@ class DocumentHelper:
                 (document_id,),
                 True
             )
-
-            os.remove(os.path.join(app.config['UPLOAD_FOLDER'], doc['path']))
+            try:
+                os.remove(os.path.join(app.config['UPLOAD_FOLDER'], doc['path']))
+            except OSError:
+                pass
 
             return cursor.rowcount == 1
         else:
